@@ -36,6 +36,8 @@ All sensor measurements are periodically, and measurements are published to thes
 
 ## Setup
 
+![required components soldered to a perf board](image.jpg)
+
 ### Hardware
 
 * Connect BME280 and CCS811 to default I2C pins (21 for SDA, 22 for SCL).

@@ -115,6 +115,9 @@ void measureCcs811() {
 void loop() {
   long start = millis();
 
+  reconnectNetwork();
+  reconnectPubSub();
+
   measureBme280();
   measureCcs811();
 
