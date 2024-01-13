@@ -73,9 +73,16 @@ void setup() {
 }
 
 float measureBrightnessPercent() {
-  // Dark shade and direct sunlight cover the entire measurable analog range,
-  // so no need to map.
-  return (float)analogRead(PIN_LIGHT_SENSOR) / 4096;
+  // Measure average brightness to even out noise from analog-to-digital conversion.
+  long agg = 0;
+  for (int i = 0; i < BRIGHTNESS_SAMPLE_COUNT; i++) {
+    // Dark shade and direct sunlight cover the entire measurable analog range,
+    // so no need to map.
+    agg += analogRead(PIN_LIGHT_SENSOR);
+    delay(BRIGHTNESS_SAMPLE_DELAY_MS);
+  }
+  
+  return (float)(agg / BRIGHTNESS_SAMPLE_COUNT) / 4096.0;
 }
 
 void publishIntMeasurement(const char *topic, int measurement) {
@@ -92,8 +99,9 @@ void publishFloatMeasurement(const char *topic, float measurement) {
 void measureBme280() {
   Serial.printf("Brightess: %f%%\n", measureBrightnessPercent() * 100);
   publishFloatMeasurement("fermentation-supervisor/brightness", measureBrightnessPercent());
-  Serial.printf("Temperature: %f C\n", bme.readTemperature());
-  publishFloatMeasurement("fermentation-supervisor/temperature", bme.readTemperature());
+  float temperature = bme.readTemperature() + TEMPERATURE_CORRECTION_C;
+  Serial.printf("Temperature: %f C\n", temperature);
+  publishFloatMeasurement("fermentation-supervisor/temperature", temperature);
   Serial.printf("Humidity: %f %%\n", bme.readHumidity());
   publishFloatMeasurement("fermentation-supervisor/humidity", bme.readHumidity());
   Serial.printf("Pressure: %f hPa\n", bme.readPressure() / 100);

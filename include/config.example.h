@@ -1,4 +1,7 @@
 #define MEASUREMENT_INTERVAL_MS 30 * 1000
+#define BRIGHTNESS_SAMPLE_COUNT 16
+#define BRIGHTNESS_SAMPLE_DELAY_MS 50
+#define TEMPERATURE_CORRECTION_C -6
 
 // Depending on I2C device vendor, addresses might vary.
 #define I2C_ADDR_BME280 0x76
